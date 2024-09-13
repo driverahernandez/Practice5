@@ -1,15 +1,15 @@
-﻿ @model Practice5_Model.Models.ProductInventory
+﻿@model Practice5_Model.Models.Sale
 @{
-    var title = "Add Product";
+    var title = "Create Sale";
 }
 <form method="post">
     <div class="row p-3 border">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="ProductId" />
-        @if (Model.ProductId != 0)
+        <input type="hidden" asp-for="SaleId" />
+        @if (Model.SaleId != 0)
         {
             //edit
-            title = "Edit Inventory";
+            title = "Edit Sale";
         }
         <div class="col-12 border-bottom">
             <h2 class="text-primary">@title</h2>
@@ -26,16 +26,32 @@
             </div>
             <div class="form-group row py-2">
                 <div class="col-4">
-                    <label asp-for="Amount"></label>
+                    <label asp-for="SaleDate"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="Amount" class="form-control" />
-                    <span asp-validation-for="Amount" class="text-danger"></span>
+                    @if (Model.SaleId != 0)
+                    {
+                        <input asp-for="SaleDate" placeholder="mm/dd/yyyy" id="datepicker_dob" type="text" class="form-control" />
+                    }
+                    else
+                    {
+                        <input asp-for="SaleDate" value="" placeholder="mm/dd/yyyy" id="datepicker_dob" type="text" class="form-control" />
+                    }
+                    <span asp-validation-for="SaleDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row py-2">
+                <div class="col-4">
+                    <label asp-for="Total"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Total" class="form-control" />
+                    <span asp-validation-for="Total" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row py-2">
                 <div class="col-4 offset-4">
-                    @if (Model.ProductId != 0)
+                    @if (Model.SaleId != 0)
                     {
                         <button type="submit" class="btn btn-primary form-control">Update</button>
                     }
@@ -54,4 +70,11 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-} 
+    <script>
+        $(function () {
+            $("#datepicker_dob").datepicker({
+            });
+        });
+    </script>
+}
+

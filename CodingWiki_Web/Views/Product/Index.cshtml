@@ -1,18 +1,16 @@
-﻿@model IEnumerable<Practice5_Model.Models.ProductInventory>
+﻿@model IEnumerable<Practice5_Model.Models.Product>
 
 <br />
 <br />
 <div class="border p-4 bg-white">
     <div class="row">
-        <div class="col-9">
-            <h2 class="text-info"> Product Inventory</h2>
+        <div class="col-10">
+            <h2 class="text-info"> Product List</h2>
         </div>
-
-        <div class="col-3 text-right">
+        <div class="col-2 text-right">
             <a asp-action="Upsert" class="btn btn-info form-control"> Create New </a>
         </div>
     </div>
-    
     <br />
     <div>
         @if (Model.Count() > 0)
@@ -23,7 +21,10 @@
                         ProductId
                     </th>
                     <th>
-                        Product Inventory Amount
+                        ProductName
+                    </th>
+                    <th>
+                        Price
                     </th>
                     <th></th>
                 </tr>
@@ -34,7 +35,10 @@
                             @item.ProductId
                         </td>
                         <td>
-                            @item.Amount
+                            @item.ProductName
+                        </td>
+                        <td>
+                            @item.Price
                         </td>
                         <td>
                             <a class="btn btn-primary text-white" asp-action="Upsert" asp-route-Id="@item.ProductId">
@@ -55,4 +59,5 @@
         }
     </div>
 </div>
- 
+
+

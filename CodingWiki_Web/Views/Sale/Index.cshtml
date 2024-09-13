@@ -1,18 +1,16 @@
-﻿@model IEnumerable<Practice5_Model.Models.ProductInventory>
+﻿@model IEnumerable<Practice5_Model.Models.Sale>
 
 <br />
 <br />
 <div class="border p-4 bg-white">
     <div class="row">
-        <div class="col-9">
-            <h2 class="text-info"> Product Inventory</h2>
+        <div class="col-10">
+            <h2 class="text-info"> Sales List</h2>
         </div>
-
-        <div class="col-3 text-right">
+        <div class="col-2 text-right">
             <a asp-action="Upsert" class="btn btn-info form-control"> Create New </a>
         </div>
     </div>
-    
     <br />
     <div>
         @if (Model.Count() > 0)
@@ -23,7 +21,10 @@
                         ProductId
                     </th>
                     <th>
-                        Product Inventory Amount
+                        Total
+                    </th>
+                    <th>
+                        SaleDate
                     </th>
                     <th></th>
                 </tr>
@@ -34,14 +35,17 @@
                             @item.ProductId
                         </td>
                         <td>
-                            @item.Amount
+                            @item.Total
                         </td>
                         <td>
-                            <a class="btn btn-primary text-white" asp-action="Upsert" asp-route-Id="@item.ProductId">
+                            @item.SaleDate.ToShortDateString()
+                        </td>
+                        <td>
+                            <a class="btn btn-primary text-white" asp-action="Upsert" asp-route-Id="@item.SaleId">
                                 Edit
                             </a>
 
-                            <a class="btn btn-danger text-white" asp-action="Delete" asp-route-Id="@item.ProductId">
+                            <a class="btn btn-danger text-white" asp-action="Delete" asp-route-Id="@item.SaleId">
                                 Delete
                             </a>
                         </td>
@@ -51,8 +55,9 @@
         }
         else
         {
-            <p>No Product exists...</p>
+            <p>No Sale exists...</p>
         }
     </div>
 </div>
- 
+
+
