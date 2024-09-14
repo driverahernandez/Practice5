@@ -57,7 +57,7 @@ namespace Practice5_DataAccess.Data
             }
             //edit 
             queryString = "SELECT TOP(1) * " +
-                        "FROM Sales" +
+                        "FROM Sales " +
                         "WHERE SaleId = @id;";
 
             using (SqlConnection connection = new(connectionString))
@@ -74,7 +74,7 @@ namespace Practice5_DataAccess.Data
                         obj.SaleId = (int)id;
                         obj.ProductId = (int)reader[1];
                         obj.Total = (double)reader[2];
-                        obj.SaleDate = (DateOnly)reader[3];
+                        obj.SaleDate = DateOnly.FromDateTime((DateTime)reader[3]);
                     }
                     reader.Close();
 
@@ -112,10 +112,10 @@ namespace Practice5_DataAccess.Data
                 {
                     //update
                     queryString = "UPDATE Sales " +
-                        "SET ProductId = @ProductId" +
-                        "Total = @Total" +
-                        "SaleDate = @SaleDate" +
-                        "WHERE SaleId = @id;";
+                        "SET ProductId = @ProductId, " +
+                        "Total = @Total, " +
+                        "SaleDate = @SaleDate " +
+                        "WHERE SaleId = @id; ";
                     SqlCommand command = new(queryString, connection);
                     command.Parameters.AddWithValue("@id", obj.SaleId);
                     command.Parameters.AddWithValue("@ProductId", obj.ProductId);
@@ -135,7 +135,7 @@ namespace Practice5_DataAccess.Data
             {
                 bool isObjectFound = false;
                 queryString = "SELECT * " +
-                            "FROM Sales" +
+                            "FROM Sales " +
                             "WHERE SaleId = @id;";
 
                 SqlCommand findCommand = new(queryString, connection);
@@ -148,7 +148,7 @@ namespace Practice5_DataAccess.Data
                     //obj.SaleId = (int)reader[0];
                     obj.ProductId = (int)reader[1];
                     obj.Total = (double)reader[2];
-                    obj.SaleDate = (DateOnly)reader[3];
+                    obj.SaleDate = DateOnly.FromDateTime((DateTime)reader[3]);
                 }
                 reader.Close();
                 if (obj == null)
@@ -158,12 +158,11 @@ namespace Practice5_DataAccess.Data
                 isObjectFound = true;
 
                 //delete
-                queryString = "DELETE FROM Sales" +
+                queryString = "DELETE FROM Sales " +
                             "WHERE SaleId = @id;";
 
                 SqlCommand deleteCommand = new(queryString, connection);
                 deleteCommand.Parameters.AddWithValue("@id", id);
-                connection.Open();
                 deleteCommand.ExecuteNonQuery();
 
                 return isObjectFound;
