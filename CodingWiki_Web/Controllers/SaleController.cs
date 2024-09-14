@@ -1,31 +1,31 @@
 ﻿using Practice5_DataAccess.Data;
 using Practice5_Model.Models;
 using Microsoft.AspNetCore.Mvc;
+using Practice5_DataAccess.Interface;
 
 namespace Practice5_Web.Controllers
 {
     public class SaleController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public SaleController(ApplicationDbContext db)
+        //private readonly ApplicationDbContext _db;
+        IRepositorySales SalesRepository;
+        public SaleController()
         {
-            _db = db;
+            //_db = db;
+            var dato = 1;
+            if (dato == 0)
+                SalesRepository = new EFSalesRepository();
+            else
+                SalesRepository = new ADOSalesRepository();
         }
+
         public IActionResult Index()
         {
-            List<Sale> objList = _db.Sales.ToList();
-            return View(objList);
+            return View(SalesRepository.GetSales());
         }
         public IActionResult Upsert(int? id)
         {
-            Sale obj = new();
-            if (id == null || id == 0)
-            {
-                //create 
-                return View(obj);
-            }
-            //edit 
-            obj = _db.Sales.FirstOrDefault(g => g.SaleId == id);
+            Sale obj = SalesRepository.UpdateSale(id);
             if (obj == null)
             {
                 return NotFound();
@@ -38,18 +38,7 @@ namespace Practice5_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (obj.SaleId == 0)
-                {
-                    //create
-                    _db.Sales.Add(obj);
-
-                }
-                else
-                {
-                    //update
-                    _db.Sales.Update(obj);
-                }
-                _db.SaveChanges();
+                SalesRepository.UpdateSale(obj);
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -58,14 +47,11 @@ namespace Practice5_Web.Controllers
 
         public IActionResult Delete(int? id)
         {
-            Sale obj = new();
-            obj = _db.Sales.FirstOrDefault(g => g.SaleId == id);
-            if (obj == null)
+            bool isObjectFound = SalesRepository.DeleteSale(id);
+            if (!isObjectFound)
             {
                 return NotFound();
             }
-            _db.Sales.Remove(obj);
-            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     }

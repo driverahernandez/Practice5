@@ -21,13 +21,17 @@ namespace Practice5_DataAccess.Data
         {
         }
 
+        public ApplicationDbContext() 
+        {
+        }
+
         //instead of using overridden function, use a constructor where options is passed. 
         //the configuration is  set in the webapp project program.cs file
         //using the constructor of the base class DbContext. 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             //this is for using the consoleapp:
-            //options.UseSqlServer("Server=USQRODRIVERAHE1;Database=Practice5;TrustServerCertificate=True;Trusted_Connection=True;");
+            options.UseSqlServer("Server=USQRODRIVERAHE1;Database=Practice5;TrustServerCertificate=True;Trusted_Connection=True;");
             //for the webapp the connection string is set in the appsettings.json file. 
         }
 
