@@ -1,31 +1,33 @@
 ﻿using Practice5_DataAccess.Data;
 using Practice5_Model.Models;
 using Microsoft.AspNetCore.Mvc;
+using Practice5_DataAccess.Data.AdoRepositories;
+using Practice5_DataAccess.Interface;
+using Practice5_DataAccess.Data.EfRepositories;
 
 namespace Practice5_Web.Controllers
 {
     public class PurchaseController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public PurchaseController(ApplicationDbContext db)
+        IRepositoryPurchases PurchasesRepository;
+        public PurchaseController()
         {
-            _db = db;
+            //_db = db;
+            var access_id = 1;
+            if (access_id == 0){
+                PurchasesRepository = new EFPurchasesRepository();
+            }
+            else
+                PurchasesRepository = new ADOPurchasesRepository();
         }
+
         public IActionResult Index()
         {
-            List<Purchase> objList = _db.Purchases.ToList();
-            return View(objList);
+            return View(PurchasesRepository.GetPurchases());
         }
         public IActionResult Upsert(int? id)
         {
-            Purchase obj = new();
-            if (id == null || id == 0)
-            {
-                //create 
-                return View(obj);
-            }
-            //edit 
-            obj = _db.Purchases.FirstOrDefault(g => g.PurchaseId == id);
+            Purchase obj = PurchasesRepository.UpdatePurchase(id);
             if (obj == null)
             {
                 return NotFound();
@@ -38,18 +40,7 @@ namespace Practice5_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (obj.PurchaseId == 0)
-                {
-                    //create
-                    _db.Purchases.Add(obj);
-
-                }
-                else
-                {
-                    //update
-                    _db.Purchases.Update(obj);
-                }
-                _db.SaveChanges();
+                PurchasesRepository.UpdatePurchase(obj);
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -58,14 +49,11 @@ namespace Practice5_Web.Controllers
 
         public IActionResult Delete(int? id)
         {
-            Purchase obj = new();
-            obj = _db.Purchases.FirstOrDefault(g => g.PurchaseId == id);
-            if (obj == null)
+            bool isObjectFound = PurchasesRepository.DeletePurchase(id);
+            if (!isObjectFound)
             {
                 return NotFound();
             }
-            _db.Purchases.Remove(obj);
-            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     }

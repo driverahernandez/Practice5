@@ -1,34 +1,34 @@
 ﻿using Practice5_DataAccess.Interface;
 using Practice5_Model.Models;
 
-namespace Practice5_DataAccess.Data
+namespace Practice5_DataAccess.Data.EfRepositories
 {
-    public class EFSalesRepository : IRepositorySales
+    public class EFProductsRepository : IRepositoryProducts
     {
         private readonly ApplicationDbContext _db;
 
-        public EFSalesRepository()
+        public EFProductsRepository()
         {
             _db = new ApplicationDbContext();
         }
 
 
-        public List<Sale> GetSales()
+        public List<Product> GetProducts()
         {
-            List<Sale> objList = _db.Sales.ToList();
+            List<Product> objList = _db.Products.ToList();
             return objList;
         }
 
-        public Sale UpdateSale(int? id)
+        public Product UpdateProduct(int? id)
         {
-            Sale obj = new();
+            Product obj = new();
             if (id == null || id == 0)
             {
                 //create 
                 return obj;
             }
             //edit 
-            obj = _db.Sales.FirstOrDefault(g => g.SaleId == id);
+            obj = _db.Products.FirstOrDefault(g => g.ProductId == id);
             if (obj == null)
             {
                 return null;
@@ -36,35 +36,35 @@ namespace Practice5_DataAccess.Data
             return obj;
         }
 
-        public void UpdateSale(Sale obj)
+        public void UpdateProduct(Product obj)
         {
-            if (obj.SaleId == 0)
+            if (obj.ProductId == 0)
             {
                 //create
-                _db.Sales.Add(obj);
+                _db.Products.Add(obj);
 
             }
             else
             {
                 //update
-                _db.Sales.Update(obj);
+                _db.Products.Update(obj);
             }
             _db.SaveChanges();
             return;
         }
-        public bool DeleteSale(int? id)
+        public bool DeleteProduct(int? id)
         {
             bool isObjectFound = false;
-            Sale obj = new();
-            obj = _db.Sales.FirstOrDefault(g => g.SaleId == id);
+            Product obj = new();
+            obj = _db.Products.FirstOrDefault(g => g.ProductId == id);
             if (obj == null)
             {
                 return isObjectFound;
             }
             isObjectFound = true;
-            _db.Sales.Remove(obj);
+            _db.Products.Remove(obj);
             _db.SaveChanges();
             return isObjectFound;
         }
-}
     }
+}

@@ -10,21 +10,18 @@ using Microsoft.Data.SqlClient;
 using Practice5_DataAccess.Interface;
 using com.sun.xml.@internal.bind.v2.model.core;
 
-namespace Practice5_DataAccess.Data
+namespace Practice5_DataAccess.Data.AdoRepositories
 {
-    public class ADOSalesRepository : IRepositorySales
-    {
-        const string connectionString = "Server=USQRODRIVERAHE1;Database=Practice5;" +
-            "TrustServerCertificate=True;Trusted_Connection=True;";
 
+    public class ADOPurchasesRepository : AdoRepository, IRepositoryPurchases
+    {
         // Provide the query string with a parameter placeholder.
         string queryString;
 
-
-        public List<Sale> GetSales()
+        public List<Purchase> GetPurchases()
         {
-            queryString = "Select * FROM Sales;";
-            List<Sale> SaleList = new List<Sale>();
+            queryString = "Select * FROM Purchases;";
+            List<Purchase> PurchaseList = new List<Purchase>();
 
             using (SqlConnection connection = new(connectionString))
             {
@@ -34,22 +31,22 @@ namespace Practice5_DataAccess.Data
 
                 while (reader.Read())
                 {
-                    SaleList.Add(new Sale
+                    PurchaseList.Add(new Purchase
                     {
-                        SaleId = (int)reader[0],
+                        PurchaseId = (int)reader[0],
                         ProductId = (int)reader[1],
                         Total = (double)reader[2],
-                        SaleDate = DateOnly.FromDateTime((DateTime)reader[3])
+                        PurchaseDate = DateOnly.FromDateTime((DateTime)reader[3])
                     });
                 }
                 reader.Close();
             }
-            return SaleList;
+            return PurchaseList;
         }
 
-        public Sale UpdateSale(int? id)
+        public Purchase UpdatePurchase(int? id)
         {
-            Sale obj = new Sale();
+            Purchase obj = new Purchase();
             if (id == null || id == 0)
             {
                 //create 
@@ -57,8 +54,8 @@ namespace Practice5_DataAccess.Data
             }
             //edit 
             queryString = "SELECT TOP(1) * " +
-                        "FROM Sales " +
-                        "WHERE SaleId = @id;";
+                        "FROM Purchases " +
+                        "WHERE PurchaseId = @id;";
 
             using (SqlConnection connection = new(connectionString))
             {
@@ -71,10 +68,10 @@ namespace Practice5_DataAccess.Data
 
                     while (reader.Read())
                     {
-                        obj.SaleId = (int)id;
+                        obj.PurchaseId = (int)id;
                         obj.ProductId = (int)reader[1];
                         obj.Total = (double)reader[2];
-                        obj.SaleDate = DateOnly.FromDateTime((DateTime)reader[3]);
+                        obj.PurchaseDate = DateOnly.FromDateTime((DateTime)reader[3]);
                     }
                     reader.Close();
 
@@ -91,18 +88,18 @@ namespace Practice5_DataAccess.Data
             }
         }
 
-        public void UpdateSale(Sale obj)
+        public void UpdatePurchase(Purchase obj)
         {
             using (SqlConnection connection = new(connectionString))
             {
-                if (obj.SaleId == 0)
+                if (obj.PurchaseId == 0)
                 {
                     //create
-                    queryString = "INSERT INTO Sales Values(@ProductId, @Total, @SaleDate);";
+                    queryString = "INSERT INTO Purchases Values(@ProductId, @Total, @PurchaseDate);";
                     SqlCommand command = new(queryString, connection);
                     command.Parameters.AddWithValue("@ProductId", obj.ProductId);
                     command.Parameters.AddWithValue("@Total", obj.Total);
-                    command.Parameters.AddWithValue("@SaleDate", obj.SaleDate);
+                    command.Parameters.AddWithValue("@PurchaseDate", obj.PurchaseDate);
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -111,16 +108,16 @@ namespace Practice5_DataAccess.Data
                 else
                 {
                     //update
-                    queryString = "UPDATE Sales " +
+                    queryString = "UPDATE Purchases " +
                         "SET ProductId = @ProductId, " +
                         "Total = @Total, " +
-                        "SaleDate = @SaleDate " +
-                        "WHERE SaleId = @id; ";
+                        "PurchaseDate = @PurchaseDate " +
+                        "WHERE PurchaseId = @id; ";
                     SqlCommand command = new(queryString, connection);
-                    command.Parameters.AddWithValue("@id", obj.SaleId);
+                    command.Parameters.AddWithValue("@id", obj.PurchaseId);
                     command.Parameters.AddWithValue("@ProductId", obj.ProductId);
                     command.Parameters.AddWithValue("@Total", obj.Total);
-                    command.Parameters.AddWithValue("@SaleDate", obj.SaleDate);
+                    command.Parameters.AddWithValue("@PurchaseDate", obj.PurchaseDate);
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -128,15 +125,15 @@ namespace Practice5_DataAccess.Data
             }
             return;
         }
-        public bool DeleteSale(int? id)
+        public bool DeletePurchase(int? id)
         {
-            Sale obj = new Sale();
+            Purchase obj = new Purchase();
             using (SqlConnection connection = new(connectionString))
             {
                 bool isObjectFound = false;
                 queryString = "SELECT * " +
-                            "FROM Sales " +
-                            "WHERE SaleId = @id;";
+                            "FROM Purchases " +
+                            "WHERE PurchaseId = @id;";
 
                 SqlCommand findCommand = new(queryString, connection);
                 findCommand.Parameters.AddWithValue("@id", id);
@@ -145,10 +142,10 @@ namespace Practice5_DataAccess.Data
                 SqlDataReader reader = findCommand.ExecuteReader();
                 while (reader.Read())
                 {
-                    //obj.SaleId = (int)reader[0];
+                    //obj.PurchaseId = (int)reader[0];
                     obj.ProductId = (int)reader[1];
                     obj.Total = (double)reader[2];
-                    obj.SaleDate = DateOnly.FromDateTime((DateTime)reader[3]);
+                    obj.PurchaseDate = DateOnly.FromDateTime((DateTime)reader[3]);
                 }
                 reader.Close();
                 if (obj == null)
@@ -158,8 +155,8 @@ namespace Practice5_DataAccess.Data
                 isObjectFound = true;
 
                 //delete
-                queryString = "DELETE FROM Sales " +
-                            "WHERE SaleId = @id;";
+                queryString = "DELETE FROM Purchases " +
+                            "WHERE PurchaseId = @id;";
 
                 SqlCommand deleteCommand = new(queryString, connection);
                 deleteCommand.Parameters.AddWithValue("@id", id);

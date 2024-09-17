@@ -1,31 +1,32 @@
 ﻿using Practice5_DataAccess.Data;
 using Practice5_Model.Models;
 using Microsoft.AspNetCore.Mvc;
+using Practice5_DataAccess.Data.AdoRepositories;
+using Practice5_DataAccess.Interface;
+using Practice5_DataAccess.Data.EfRepositories;
 
 namespace Practice5_Web.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public ProductController(ApplicationDbContext db)
+        IRepositoryProducts ProductsRepository;
+        public ProductController()
         {
-            _db = db;
+            //_db = db;
+            var access_id = 0;
+            if (access_id == 0)
+                ProductsRepository = new EFProductsRepository();
+            else
+                ProductsRepository = new ADOProductsRepository();
         }
+
         public IActionResult Index()
         {
-            List<Product> objList = _db.Products.ToList();
-            return View(objList);
+            return View(ProductsRepository.GetProducts());
         }
         public IActionResult Upsert(int? id)
         {
-            Product obj = new();
-            if (id == null || id == 0)
-            {
-                //create 
-                return View(obj);
-            }
-            //edit 
-            obj = _db.Products.FirstOrDefault(g => g.ProductId == id);
+            Product obj = ProductsRepository.UpdateProduct(id);
             if (obj == null)
             {
                 return NotFound();
@@ -38,18 +39,7 @@ namespace Practice5_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (obj.ProductId == 0)
-                {
-                    //create
-                    _db.Products.Add(obj);
-
-                }
-                else
-                {
-                    //update
-                    _db.Products.Update(obj);
-                }
-                _db.SaveChanges();
+                ProductsRepository.UpdateProduct(obj);
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -58,15 +48,13 @@ namespace Practice5_Web.Controllers
 
         public IActionResult Delete(int? id)
         {
-            Product obj = new();
-            obj = _db.Products.FirstOrDefault(g => g.ProductId == id);
-            if (obj == null)
+            bool isObjectFound = ProductsRepository.DeleteProduct(id);
+            if (!isObjectFound)
             {
                 return NotFound();
             }
-            _db.Products.Remove(obj);
-            _db.SaveChanges();
             return RedirectToAction("Index");
         }
+        
     }
 }

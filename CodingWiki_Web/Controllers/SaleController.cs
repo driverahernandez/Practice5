@@ -2,6 +2,8 @@
 using Practice5_Model.Models;
 using Microsoft.AspNetCore.Mvc;
 using Practice5_DataAccess.Interface;
+using Practice5_DataAccess.Data.AdoRepositories;
+using Practice5_DataAccess.Data.EfRepositories;
 
 namespace Practice5_Web.Controllers
 {
@@ -12,8 +14,8 @@ namespace Practice5_Web.Controllers
         public SaleController()
         {
             //_db = db;
-            var dato = 1;
-            if (dato == 0)
+            var access_id = 1;
+            if (access_id == 0)
                 SalesRepository = new EFSalesRepository();
             else
                 SalesRepository = new ADOSalesRepository();

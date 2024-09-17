@@ -1,33 +1,33 @@
 ﻿using Practice5_DataAccess.Data;
 using Practice5_Model.Models;
 using Microsoft.AspNetCore.Mvc;
+using Practice5_DataAccess.Data.AdoRepositories;
+using Practice5_DataAccess.Interface;
+using Practice5_DataAccess.Data.EfRepositories;
 
 namespace Practice5_Web.Controllers
 {
     public class ProductInventoryController : Controller
     {
-        ////dependency injection
-        ////genrecontroller class depends on applicationdbcontext class
-        private readonly ApplicationDbContext _db;
-        public ProductInventoryController(ApplicationDbContext db)
+        IRepositoryProductsInventory ProductsInventoryRepository;
+        public ProductInventoryController()
         {
-            _db = db;
+            //_db = db;
+            var access_id = 1;
+            if (access_id == 0){
+                ProductsInventoryRepository = new EFProductsInventoryRepository();
+            }
+            else
+                ProductsInventoryRepository = new ADOProductsInventoryRepository();
         }
+
         public IActionResult Index()
         {
-            List<ProductInventory> objList = _db.ProductsInventory.ToList();
-            return View(objList);
+            return View(ProductsInventoryRepository.GetProductsInventory());
         }
         public IActionResult Upsert(int? id)
         {
-            ProductInventory obj = new();
-            if (id == null || id == 0)
-            {
-                //create 
-                return View(obj);
-            }
-            //edit 
-            obj = _db.ProductsInventory.FirstOrDefault(g => g.ProductId == id);
+            ProductInventory obj = ProductsInventoryRepository.UpdateProductInventory(id);
             if (obj == null)
             {
                 return NotFound();
@@ -40,18 +40,7 @@ namespace Practice5_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (obj.ProductId == 0)
-                {
-                    //create
-                    _db.ProductsInventory.Add(obj);
-
-                }
-                else
-                {
-                    //update
-                    _db.ProductsInventory.Update(obj);
-                }
-                _db.SaveChanges();
+                ProductsInventoryRepository.UpdateProductInventory(obj);
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -60,14 +49,11 @@ namespace Practice5_Web.Controllers
 
         public IActionResult Delete(int? id)
         {
-            ProductInventory obj = new();
-            obj = _db.ProductsInventory.FirstOrDefault(g => g.ProductId == id);
-            if (obj == null)
+            bool isObjectFound = ProductsInventoryRepository.DeleteProductInventory(id);
+            if (!isObjectFound)
             {
                 return NotFound();
             }
-            _db.ProductsInventory.Remove(obj);
-            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     }
