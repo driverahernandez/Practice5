@@ -12,9 +12,7 @@ namespace Practice5_Web.Controllers
         IRepositoryProductsInventory ProductsInventoryRepository;
         public ProductInventoryController()
         {
-            //_db = db;
-            var access_id = 1;
-            if (access_id == 0){
+            if (AccessType.id == 0){
                 ProductsInventoryRepository = new EFProductsInventoryRepository();
             }
             else

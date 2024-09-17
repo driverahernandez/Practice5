@@ -12,9 +12,7 @@ namespace Practice5_Web.Controllers
         IRepositoryProducts ProductsRepository;
         public ProductController()
         {
-            //_db = db;
-            var access_id = 0;
-            if (access_id == 0)
+            if (AccessType.id == 0)
                 ProductsRepository = new EFProductsRepository();
             else
                 ProductsRepository = new ADOProductsRepository();

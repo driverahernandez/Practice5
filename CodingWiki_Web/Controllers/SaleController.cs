@@ -9,16 +9,20 @@ namespace Practice5_Web.Controllers
 {
     public class SaleController : Controller
     {
-        //private readonly ApplicationDbContext _db;
         IRepositorySales SalesRepository;
+     
         public SaleController()
         {
-            //_db = db;
-            var access_id = 1;
-            if (access_id == 0)
+            string accesstype; 
+            if (AccessType.id == 0){
                 SalesRepository = new EFSalesRepository();
-            else
+                accesstype = "EntityFramework"; 
+            }
+            else{
                 SalesRepository = new ADOSalesRepository();
+                accesstype = "ADO.net";
+            }
+            Console.WriteLine("Current Type of Repository:"+ accesstype);
         }
 
         public IActionResult Index()
