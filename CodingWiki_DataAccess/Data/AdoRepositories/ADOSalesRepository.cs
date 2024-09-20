@@ -14,7 +14,6 @@ namespace Practice5_DataAccess.Data.AdoRepositories
 {
     public class ADOSalesRepository : AdoRepository, IRepositorySales
     {
-        // Provide the query string with a parameter placeholder.
 
         public List<Sale> GetSales()
         {

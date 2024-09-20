@@ -11,7 +11,10 @@ namespace Practice5_DataAccess.Data.EfRepositories
         {
             _db = new ApplicationDbContext();
         }
-
+        public EFSalesRepository(ApplicationDbContext db)
+        {
+            _db = db;
+        }
 
         public List<Sale> GetSales()
         {

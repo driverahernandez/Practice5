@@ -36,8 +36,6 @@ namespace Practice5.Test.WebTests
             mockSalesRepository.Setup(s => s.UpdateSale(validId)).Returns(salesList[0]);
             // when UpdateSale method receives an invalid id, it returns null 
             mockSalesRepository.Setup(s => s.UpdateSale(invalidId)).Returns((Sale)null);
-
-            //mockSalesRepository.Setup(s => s.UpdateSale(It.IsAny<Sale>()));
             
             // when DeleteSale method receives a valid id, it returns true
             mockSalesRepository.Setup(s => s.DeleteSale(1)).Returns(true);
@@ -100,7 +98,7 @@ namespace Practice5.Test.WebTests
         [Category("DELETE")]
         public void Delete_Given_InvalidId_ReturnsNotFound()
         {
-            var result = _saleController.Delete(validId);
+            var result = _saleController.Delete(invalidId);
             Assert.IsInstanceOf<NotFoundResult>(result);    //Pass
             //Assert.IsInstanceOf<ViewResult>(result);      //Fail
         }

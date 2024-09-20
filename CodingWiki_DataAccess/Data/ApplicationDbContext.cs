@@ -30,8 +30,8 @@ namespace Practice5_DataAccess.Data
         //using the constructor of the base class DbContext. 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            //this is for using the consoleapp:
-            options.UseSqlServer("Server=USQRODRIVERAHE1;Database=Practice5;TrustServerCertificate=True;Trusted_Connection=True;");
+            //options.UseSqlServer("Server=USQRODRIVERAHE1;Database=Practice5;TrustServerCertificate=True;Trusted_Connection=True;");
+            
             //for the webapp the connection string is set in the appsettings.json file. 
         }
 
