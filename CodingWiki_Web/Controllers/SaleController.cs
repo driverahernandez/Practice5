@@ -4,25 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 using Practice5_DataAccess.Interface;
 using Practice5_DataAccess.Data.AdoRepositories;
 using Practice5_DataAccess.Data.EfRepositories;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Practice5_Web.Controllers
 {
     public class SaleController : Controller
     {
-        IRepositorySales SalesRepository;
+        private IRepositorySales SalesRepository;
      
-        public SaleController()
+        public SaleController(IRepositorySalesFactory repositorySalesFactory)
         {
-            string accesstype; 
-            if (AccessType.id == 0){
-                SalesRepository = new EFSalesRepository();
-                accesstype = "EntityFramework"; 
-            }
-            else{
-                SalesRepository = new ADOSalesRepository();
-                accesstype = "ADO.net";
-            }
-            Console.WriteLine("Current Type of Repository:"+ accesstype);
+            SalesRepository = repositorySalesFactory.GetSalesRepository();
         }
 
         public IActionResult Index()

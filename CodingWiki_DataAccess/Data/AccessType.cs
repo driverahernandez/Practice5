@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Practice5_DataAccess.Data
 {
+
     public class AccessType
     {
         //static properties to pass the current choice to all controllers (sales, purchases, products, and productsinventory)
@@ -19,19 +20,19 @@ namespace Practice5_DataAccess.Data
 
         public static List<AccessType> getAvailableTypes()
         {
-            List<AccessType> availableTypes = new List<AccessType> { new AccessType { obj_id = 0, obj_choice = DataAccessChoice.EF, obj_isSet = (id==0)? true:false}, new AccessType { obj_id = 1, obj_choice = DataAccessChoice.ADO, obj_isSet = (id == 1)? true : false } };
+            List<AccessType> availableTypes = new List<AccessType> { new AccessType { obj_id = 0, obj_choice = (DataAccessChoice)0, obj_isSet = (id==0)? true:false}, new AccessType { obj_id = 1, obj_choice = (DataAccessChoice)1, obj_isSet = (id == 1)? true : false } };
             return availableTypes; 
         }
         public static void setAsEf()
         {
             id = 0;
-            choice = DataAccessChoice.EF; 
+            choice = (DataAccessChoice)id; 
 
         }
         public static void setAsAdo()
         {
             id = 1;
-            choice = DataAccessChoice.ADO; 
+            choice = (DataAccessChoice)id; 
         }
         public static void setTypeOfAcess(int input)
         {
