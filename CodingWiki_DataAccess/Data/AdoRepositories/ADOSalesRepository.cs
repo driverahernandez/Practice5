@@ -40,7 +40,47 @@ namespace Practice5_DataAccess.Data.AdoRepositories
             }
             return SaleList;
         }
+        public Sale GetSaleById(int id)
+        {
+            queryString = "SELECT TOP(1) * " +
+                        "FROM Sales " +
+                        "WHERE SaleId = @id;";
+            Sale obj = new Sale();
 
+            using (SqlConnection connection = new(connectionString))
+            {
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@id", id);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    obj.SaleId = (int)id;
+                    obj.ProductId = (int)reader[1];
+                    obj.Total = (double)reader[2];
+                    obj.SaleDate = DateOnly.FromDateTime((DateTime)reader[3]);
+                }
+                reader.Close();
+            }
+            return obj;
+        }
+
+        public void CreateSale(Sale obj)
+        {
+            using (SqlConnection connection = new(connectionString))
+            {
+                //create
+                queryString = "INSERT INTO Sales Values(@ProductId, @Total, @SaleDate);";
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@ProductId", obj.ProductId);
+                command.Parameters.AddWithValue("@Total", obj.Total);
+                command.Parameters.AddWithValue("@SaleDate", obj.SaleDate);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
         public Sale UpdateSale(int? id)
         {
             Sale obj = new Sale();

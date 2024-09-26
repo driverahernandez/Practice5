@@ -1,0 +1,6 @@
+@Practice5_WebAPI_HostAddress = http://localhost:5296
+
+GET {{Practice5_WebAPI_HostAddress}}/practice7/
+Accept: application/json
+
+###

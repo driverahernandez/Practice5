@@ -21,7 +21,23 @@ namespace Practice5_DataAccess.Data.EfRepositories
             List<Sale> objList = _db.Sales.ToList();
             return objList;
         }
+        public Sale? GetSaleById(int id)
+        {
+            var obj = _db.Sales.FirstOrDefault(s => s.SaleId==id);
 
+            return obj;
+        }
+        public void CreateSale(Sale sale)
+        {
+            Sale obj = new Sale();
+            obj.SaleId = 0;
+            obj.ProductId = sale.ProductId;
+            obj.Total = sale.Total;
+            obj.SaleDate = sale.SaleDate;
+
+            _db.Sales.Add(obj);
+            _db.SaveChanges();
+        }
         public Sale UpdateSale(int? id)
         {
             Sale obj = new();

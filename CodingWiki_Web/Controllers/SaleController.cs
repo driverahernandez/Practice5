@@ -5,25 +5,30 @@ using Practice5_DataAccess.Interface;
 using Practice5_DataAccess.Data.AdoRepositories;
 using Practice5_DataAccess.Data.EfRepositories;
 using Microsoft.AspNetCore.Authentication;
+using Practice5_Web.Data;
 
 namespace Practice5_Web.Controllers
 {
     public class SaleController : Controller
     {
-        private IRepositorySales SalesRepository;
-     
-        public SaleController(IRepositorySalesFactory repositorySalesFactory)
+        public readonly IWebApiExecuter WebApiExecuter;
+
+        public SaleController(IWebApiExecuter webApiExecuter)
         {
-            SalesRepository = repositorySalesFactory.GetSalesRepository();
+            WebApiExecuter = webApiExecuter;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(SalesRepository.GetSales());
+            var result = await WebApiExecuter.InvokeGet<List<Sale>>("/api/Sale");
+            return View(result);
         }
-        public IActionResult Upsert(int? id)
+
+        public async Task<IActionResult> Upsert(int? id)
         {
-            Sale obj = SalesRepository.UpdateSale(id);
+            Sale obj = new Sale();
+            if (id != 0)
+                obj = await WebApiExecuter.InvokeGet<Sale>($"/api/Sale/{id}");
             if (obj == null)
             {
                 return NotFound();
@@ -32,24 +37,25 @@ namespace Practice5_Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Sale obj)
+        public async Task<IActionResult> Upsert(Sale obj)
         {
             if (ModelState.IsValid)
             {
-                SalesRepository.UpdateSale(obj);
-                return RedirectToAction("Index");
+                if (obj.SaleId == 0)
+                    await WebApiExecuter.InvokePost<Sale>("/api/Sale", obj);
+                else
+                {
+                    await WebApiExecuter.InvokePut<Sale>($"/api/Sale/{obj.SaleId}", obj);
+                    return RedirectToAction("Index");
+                }
             }
             return View(obj);
 
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            bool isObjectFound = SalesRepository.DeleteSale(id);
-            if (!isObjectFound)
-            {
-                return NotFound();
-            }
+            await WebApiExecuter.InvokeDelete($"/api/Sale/{id}");
             return RedirectToAction("Index");
         }
     }

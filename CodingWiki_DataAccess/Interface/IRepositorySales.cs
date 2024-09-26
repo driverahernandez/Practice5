@@ -10,6 +10,8 @@ namespace Practice5_DataAccess.Interface
     public interface IRepositorySales
     {
         public List<Sale> GetSales();
+        public Sale GetSaleById(int id);
+        public void CreateSale(Sale sale);
         public Sale UpdateSale(int? id);
         public void UpdateSale(Sale sale);
         public bool DeleteSale(int? id);

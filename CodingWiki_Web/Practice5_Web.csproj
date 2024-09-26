@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CodingWiki_DataAccess\Practice5_DataAccess.csproj" />
     <ProjectReference Include="..\CodingWiki_Model\Practice5_Model.csproj" />
+    <ProjectReference Include="..\Practice5_WebAPI\Practice5_WebAPI.csproj" />
   </ItemGroup>
 
 </Project>

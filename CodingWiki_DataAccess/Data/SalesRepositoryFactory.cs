@@ -1,16 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using NuGet.Configuration;
-using Practice5_DataAccess.Data;
-using Practice5_DataAccess.Data.AdoRepositories;
+﻿using Practice5_DataAccess.Data.AdoRepositories;
 using Practice5_DataAccess.Data.EfRepositories;
 using Practice5_DataAccess.Interface;
 
-namespace Practice5_Web
+namespace Practice5_DataAccess.Data
 {
-    public interface IRepositorySalesFactory {
-
-        public IRepositorySales GetSalesRepository();
-    }
     public class SalesRepositoryFactory : IRepositorySalesFactory
     {
         private readonly EFSalesRepository _efSalesRepository;
