@@ -30,7 +30,6 @@ namespace Practice5_DataAccess.Data.EfRepositories
         public void CreateSale(Sale sale)
         {
             Sale obj = new Sale();
-            obj.SaleId = 0;
             obj.ProductId = sale.ProductId;
             obj.Total = sale.Total;
             obj.SaleDate = sale.SaleDate;

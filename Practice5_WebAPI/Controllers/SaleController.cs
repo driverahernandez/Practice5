@@ -38,7 +38,9 @@ namespace Practice5_WebAPI.Controllers
         public IActionResult CreateSale([FromBody] Sale sale) 
         {
             SalesRepository.CreateSale(sale);
-            return Ok();
+            return CreatedAtAction(nameof(GetSaleById),
+                new { id = sale.SaleId },
+                sale);
         }
         [HttpDelete("{id}")]
         public IActionResult DeleteSale(int id)

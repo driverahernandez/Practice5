@@ -1,10 +1,6 @@
-﻿using Practice5_DataAccess.Data;
+﻿
 using Practice5_Model.Models;
 using Microsoft.AspNetCore.Mvc;
-using Practice5_DataAccess.Interface;
-using Practice5_DataAccess.Data.AdoRepositories;
-using Practice5_DataAccess.Data.EfRepositories;
-using Microsoft.AspNetCore.Authentication;
 using Practice5_Web.Data;
 
 namespace Practice5_Web.Controllers
@@ -27,7 +23,7 @@ namespace Practice5_Web.Controllers
         public async Task<IActionResult> Upsert(int? id)
         {
             Sale obj = new Sale();
-            if (id != 0)
+            if (id != null)
                 obj = await WebApiExecuter.InvokeGet<Sale>($"/api/Sale/{id}");
             if (obj == null)
             {
@@ -41,8 +37,13 @@ namespace Practice5_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (obj.SaleId == 0)
+                if (obj.SaleId == 0){
                     await WebApiExecuter.InvokePost<Sale>("/api/Sale", obj);
+
+                    return RedirectToAction("Index");
+                }
+
+
                 else
                 {
                     await WebApiExecuter.InvokePut<Sale>($"/api/Sale/{obj.SaleId}", obj);
