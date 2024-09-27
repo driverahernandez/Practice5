@@ -43,6 +43,47 @@ namespace Practice5_DataAccess.Data.AdoRepositories
             }
             return PurchaseList;
         }
+        public Purchase GetPurchaseById(int id)
+        {
+            queryString = "SELECT TOP(1) * " +
+                        "FROM Purchases " +
+                        "WHERE PurchaseId = @id;";
+            Purchase obj = new Purchase();
+
+            using (SqlConnection connection = new(connectionString))
+            {
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@id", id);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    obj.PurchaseId = (int)id;
+                    obj.ProductId = (int)reader[1];
+                    obj.Total = (double)reader[2];
+                    obj.PurchaseDate = DateOnly.FromDateTime((DateTime)reader[3]);
+                }
+                reader.Close();
+            }
+            return obj;
+        }
+
+        public void CreatePurchase(Purchase obj)
+        {
+            using (SqlConnection connection = new(connectionString))
+            {
+                //create
+                queryString = "INSERT INTO Purchases Values(@ProductId, @Total, @PurchaseDate);";
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@ProductId", obj.ProductId);
+                command.Parameters.AddWithValue("@Total", obj.Total);
+                command.Parameters.AddWithValue("@PurchaseDate", obj.PurchaseDate);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
 
         public Purchase UpdatePurchase(int? id)
         {

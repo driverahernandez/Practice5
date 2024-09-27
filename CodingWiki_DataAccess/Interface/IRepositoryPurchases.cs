@@ -9,5 +9,7 @@ namespace Practice5_DataAccess.Interface
         public Purchase UpdatePurchase(int? id);
         public void UpdatePurchase(Purchase purchase);  
         public bool DeletePurchase(int? id);
+        Purchase GetPurchaseById(int id);
+        void CreatePurchase(Purchase purchase);
     }
 }

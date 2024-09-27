@@ -4,27 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 using Practice5_DataAccess.Data.AdoRepositories;
 using Practice5_DataAccess.Interface;
 using Practice5_DataAccess.Data.EfRepositories;
+using Practice5_Web.Data;
 
 namespace Practice5_Web.Controllers
 {
     public class ProductController : Controller
     {
-        IRepositoryProducts ProductsRepository;
-        public ProductController()
+        public readonly IWebApiExecuter WebApiExecuter;
+
+        public ProductController(IWebApiExecuter webApiExecuter)
         {
-            if (AccessType.id == 0)
-                ProductsRepository = new EFProductsRepository();
-            else
-                ProductsRepository = new ADOProductsRepository();
+            WebApiExecuter = webApiExecuter;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(ProductsRepository.GetProducts());
+            var result = await WebApiExecuter.InvokeGet<List<Product>>("/api/Product");
+            return View(result);
         }
-        public IActionResult Upsert(int? id)
+
+        public async Task<IActionResult> Upsert(int? id)
         {
-            Product obj = ProductsRepository.UpdateProduct(id);
+            Product obj = new Product();
+            if (id != null)
+                obj = await WebApiExecuter.InvokeGet<Product>($"/api/Product/{id}");
             if (obj == null)
             {
                 return NotFound();
@@ -33,26 +36,33 @@ namespace Practice5_Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Product obj)
+        public async Task<IActionResult> Upsert(Product obj)
         {
             if (ModelState.IsValid)
             {
-                ProductsRepository.UpdateProduct(obj);
-                return RedirectToAction("Index");
+                if (obj.ProductId == 0)
+                {
+                    await WebApiExecuter.InvokePost<Product>("/api/Product", obj);
+
+                    return RedirectToAction("Index");
+                }
+
+
+                else
+                {
+                    await WebApiExecuter.InvokePut<Product>($"/api/Product/{obj.ProductId}", obj);
+                    return RedirectToAction("Index");
+                }
             }
             return View(obj);
 
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            bool isObjectFound = ProductsRepository.DeleteProduct(id);
-            if (!isObjectFound)
-            {
-                return NotFound();
-            }
+            await WebApiExecuter.InvokeDelete($"/api/Product/{id}");
             return RedirectToAction("Index");
         }
-        
+
     }
 }

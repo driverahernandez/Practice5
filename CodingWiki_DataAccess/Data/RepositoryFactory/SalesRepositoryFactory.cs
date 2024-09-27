@@ -2,7 +2,7 @@
 using Practice5_DataAccess.Data.EfRepositories;
 using Practice5_DataAccess.Interface;
 
-namespace Practice5_DataAccess.Data
+namespace Practice5_DataAccess.Data.RepositoryFactory
 {
     public class SalesRepositoryFactory : IRepositorySalesFactory
     {

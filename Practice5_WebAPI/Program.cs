@@ -2,11 +2,23 @@ using Microsoft.EntityFrameworkCore;
 using Practice5_DataAccess.Data.AdoRepositories;
 using Practice5_DataAccess.Data.EfRepositories;
 using Practice5_DataAccess.Data;
+using Practice5_DataAccess.Data.RepositoryFactory;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<EFSalesRepository>();
 builder.Services.AddTransient<ADOSalesRepository>();
-builder.Services.AddTransient<IRepositorySalesFactory, SalesRepositoryFactory>();
+builder.Services.AddTransient<EFProductsRepository>();
+builder.Services.AddTransient<ADOProductsRepository>();
+builder.Services.AddTransient<EFPurchasesRepository>();
+builder.Services.AddTransient<ADOPurchasesRepository>();
+builder.Services.AddTransient<EFProductsInventoryRepository>();
+builder.Services.AddTransient<ADOProductsInventoryRepository>();
+
+builder.Services.AddTransient<IRepositorySalesFactory, SalesRepositoryFactory>(); 
+builder.Services.AddTransient<IRepositoryProductsFactory, ProductsRepositoryFactory>();
+builder.Services.AddTransient<IRepositoryPurchasesFactory, PurchasesRepositoryFactory>();
+builder.Services.AddTransient<IRepositoryProductsInventoryFactory, ProductsInventoryRepositoryFactory>();
+
 
 
 

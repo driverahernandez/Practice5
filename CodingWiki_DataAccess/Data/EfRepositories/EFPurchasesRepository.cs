@@ -12,13 +12,28 @@ namespace Practice5_DataAccess.Data.EfRepositories
             _db = new ApplicationDbContext();
         }
 
-
         public List<Purchase> GetPurchases()
         {
             List<Purchase> objList = _db.Purchases.ToList();
             return objList;
         }
+        public Purchase? GetPurchaseById(int id)
+        {
+            var obj = _db.Purchases.FirstOrDefault(s => s.PurchaseId == id);
 
+            return obj;
+        }
+
+        public void CreatePurchase(Purchase purchase)
+        {
+            Purchase obj = new Purchase();
+            obj.ProductId = purchase.ProductId;
+            obj.Total = purchase.Total;
+            obj.PurchaseDate = purchase.PurchaseDate;
+
+            _db.Purchases.Add(obj);
+            _db.SaveChanges();
+        }
         public Purchase UpdatePurchase(int? id)
         {
             Purchase obj = new();

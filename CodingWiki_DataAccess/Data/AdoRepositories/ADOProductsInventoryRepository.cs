@@ -40,6 +40,43 @@ namespace Practice5_DataAccess.Data.AdoRepositories
             return ProductInventoryList;
         }
 
+        public ProductInventory GetProductInventoryById(int id)
+        {
+            queryString = "SELECT TOP(1) * " +
+                        "FROM ProductsInventory " +
+                        "WHERE ProductId = @id;";
+            ProductInventory obj = new ProductInventory();
+
+            using (SqlConnection connection = new(connectionString))
+            {
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@id", id);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    obj.ProductId = (int)id;
+                    obj.Amount = (int)reader[1];
+                }
+                reader.Close();
+            }
+            return obj;
+        }
+
+        public void CreateProductInventory(ProductInventory obj)
+        {
+            using (SqlConnection connection = new(connectionString))
+            {
+                //create
+                queryString = "INSERT INTO ProductsInventory Values(@Amount);";
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@Amount", obj.Amount);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
         public ProductInventory UpdateProductInventory(int? id)
         {
             ProductInventory obj = new ProductInventory();

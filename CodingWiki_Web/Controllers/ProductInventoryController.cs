@@ -4,28 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 using Practice5_DataAccess.Data.AdoRepositories;
 using Practice5_DataAccess.Interface;
 using Practice5_DataAccess.Data.EfRepositories;
+using Practice5_Web.Data;
 
 namespace Practice5_Web.Controllers
 {
     public class ProductInventoryController : Controller
     {
-        IRepositoryProductsInventory ProductsInventoryRepository;
-        public ProductInventoryController()
+        public readonly IWebApiExecuter WebApiExecuter;
+
+        public ProductInventoryController(IWebApiExecuter webApiExecuter)
         {
-            if (AccessType.id == 0){
-                ProductsInventoryRepository = new EFProductsInventoryRepository();
-            }
-            else
-                ProductsInventoryRepository = new ADOProductsInventoryRepository();
+            WebApiExecuter = webApiExecuter;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(ProductsInventoryRepository.GetProductsInventory());
+            var result = await WebApiExecuter.InvokeGet<List<ProductInventory>>("/api/ProductInventory");
+            return View(result);
         }
-        public IActionResult Upsert(int? id)
+
+        public async Task<IActionResult> Upsert(int? id)
         {
-            ProductInventory obj = ProductsInventoryRepository.UpdateProductInventory(id);
+            ProductInventory obj = new ProductInventory();
+            if (id != null)
+                obj = await WebApiExecuter.InvokeGet<ProductInventory>($"/api/ProductInventory/{id}");
             if (obj == null)
             {
                 return NotFound();
@@ -34,24 +36,31 @@ namespace Practice5_Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(ProductInventory obj)
+        public async Task<IActionResult> Upsert(ProductInventory obj)
         {
             if (ModelState.IsValid)
             {
-                ProductsInventoryRepository.UpdateProductInventory(obj);
-                return RedirectToAction("Index");
+                if (obj.ProductId == 0)
+                {
+                    await WebApiExecuter.InvokePost<ProductInventory>("/api/ProductInventory", obj);
+
+                    return RedirectToAction("Index");
+                }
+
+
+                else
+                {
+                    await WebApiExecuter.InvokePut<ProductInventory>($"/api/ProductInventory/{obj.ProductId}", obj);
+                    return RedirectToAction("Index");
+                }
             }
             return View(obj);
 
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            bool isObjectFound = ProductsInventoryRepository.DeleteProductInventory(id);
-            if (!isObjectFound)
-            {
-                return NotFound();
-            }
+            await WebApiExecuter.InvokeDelete($"/api/ProductInventory/{id}");
             return RedirectToAction("Index");
         }
     }

@@ -4,28 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 using Practice5_DataAccess.Data.AdoRepositories;
 using Practice5_DataAccess.Interface;
 using Practice5_DataAccess.Data.EfRepositories;
+using Practice5_Web.Data;
 
 namespace Practice5_Web.Controllers
 {
     public class PurchaseController : Controller
     {
-        IRepositoryPurchases PurchasesRepository;
-        public PurchaseController()
+        public readonly IWebApiExecuter WebApiExecuter;
+
+        public PurchaseController(IWebApiExecuter webApiExecuter)
         {
-            if (AccessType.id == 0){
-                PurchasesRepository = new EFPurchasesRepository();
-            }
-            else
-                PurchasesRepository = new ADOPurchasesRepository();
+            WebApiExecuter = webApiExecuter;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(PurchasesRepository.GetPurchases());
+            var result = await WebApiExecuter.InvokeGet<List<Purchase>>("/api/Purchase");
+            return View(result);
         }
-        public IActionResult Upsert(int? id)
+
+        public async Task<IActionResult> Upsert(int? id)
         {
-            Purchase obj = PurchasesRepository.UpdatePurchase(id);
+            Purchase obj = new Purchase();
+            if (id != null)
+                obj = await WebApiExecuter.InvokeGet<Purchase>($"/api/Purchase/{id}");
             if (obj == null)
             {
                 return NotFound();
@@ -34,24 +36,31 @@ namespace Practice5_Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Purchase obj)
+        public async Task<IActionResult> Upsert(Purchase obj)
         {
             if (ModelState.IsValid)
             {
-                PurchasesRepository.UpdatePurchase(obj);
-                return RedirectToAction("Index");
+                if (obj.PurchaseId == 0)
+                {
+                    await WebApiExecuter.InvokePost<Purchase>("/api/Purchase", obj);
+
+                    return RedirectToAction("Index");
+                }
+
+
+                else
+                {
+                    await WebApiExecuter.InvokePut<Purchase>($"/api/Purchase/{obj.PurchaseId}", obj);
+                    return RedirectToAction("Index");
+                }
             }
             return View(obj);
 
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            bool isObjectFound = PurchasesRepository.DeletePurchase(id);
-            if (!isObjectFound)
-            {
-                return NotFound();
-            }
+            await WebApiExecuter.InvokeDelete($"/api/Purchase/{id}");
             return RedirectToAction("Index");
         }
     }

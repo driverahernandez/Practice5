@@ -19,6 +19,22 @@ namespace Practice5_DataAccess.Data.EfRepositories
             return objList;
         }
 
+        public Product? GetProductById(int id)
+        {
+            var obj = _db.Products.FirstOrDefault(s => s.ProductId == id);
+
+            return obj;
+        }
+        public void CreateProduct(Product product)
+        {
+            Product obj = new Product();
+            obj.ProductId = product.ProductId;
+            obj.ProductName = product.ProductName;
+            obj.Price = product.Price;
+
+            _db.Products.Add(obj);
+            _db.SaveChanges();
+        }
         public Product UpdateProduct(int? id)
         {
             Product obj = new();

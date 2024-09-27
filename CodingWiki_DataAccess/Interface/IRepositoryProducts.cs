@@ -8,5 +8,7 @@ namespace Practice5_DataAccess.Interface
         public Product UpdateProduct(int? id);
         public void UpdateProduct(Product product);
         public bool DeleteProduct(int? id);
+        Product GetProductById(int id);
+        void CreateProduct(Product product);
     }
 }

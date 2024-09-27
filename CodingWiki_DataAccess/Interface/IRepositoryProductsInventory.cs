@@ -8,5 +8,7 @@ namespace Practice5_DataAccess.Interface
         public ProductInventory UpdateProductInventory(int? id);
         public void UpdateProductInventory(ProductInventory productInventory);
         public bool DeleteProductInventory(int? id);
+        void CreateProductInventory(ProductInventory product);
+        ProductInventory GetProductInventoryById(int id);
     }
 }

@@ -41,6 +41,45 @@ namespace Practice5_DataAccess.Data.AdoRepositories
             return ProductList;
         }
 
+        public Product GetProductById(int id)
+        {
+            queryString = "SELECT TOP(1) * " +
+                        "FROM Products " +
+                        "WHERE ProductId = @id;";
+            Product obj = new Product();
+
+            using (SqlConnection connection = new(connectionString))
+            {
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@id", id);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    obj.ProductId = (int)id;
+                    obj.ProductName = (string)reader[1];
+                    obj.Price = (double)reader[2];
+                }
+                reader.Close();
+            }
+            return obj;
+        }
+
+        public void CreateProduct(Product obj)
+        {
+            using (SqlConnection connection = new(connectionString))
+            {
+                //create
+                queryString = "INSERT INTO Products Values(@ProductName, @Price);";
+                SqlCommand command = new(queryString, connection);
+                command.Parameters.AddWithValue("@ProductName", obj.ProductName);
+                command.Parameters.AddWithValue("@Price", obj.Price);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
         public Product UpdateProduct(int? id)
         {
             Product obj = new Product();

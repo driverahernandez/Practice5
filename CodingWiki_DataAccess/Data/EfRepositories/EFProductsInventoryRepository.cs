@@ -18,7 +18,21 @@ namespace Practice5_DataAccess.Data.EfRepositories
             List<ProductInventory> objList = _db.ProductsInventory.ToList();
             return objList;
         }
+        public ProductInventory? GetProductInventoryById(int id)
+        {
+            var obj = _db.ProductsInventory.FirstOrDefault(s => s.ProductId == id);
 
+            return obj;
+        }
+        public void CreateProductInventory(ProductInventory productInventory)
+        {
+            ProductInventory obj = new ProductInventory();
+            obj.ProductId = productInventory.ProductId;
+            obj.Amount = productInventory.Amount;
+
+            _db.ProductsInventory.Add(obj);
+            _db.SaveChanges();
+        }
         public ProductInventory UpdateProductInventory(int? id)
         {
             ProductInventory obj = new();
