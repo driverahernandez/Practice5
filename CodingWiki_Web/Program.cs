@@ -37,6 +37,10 @@ builder.Services.AddHttpClient("Practice7Api", client => {
     client.BaseAddress = new Uri("https://localhost:7117/api/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
     });
+builder.Services.AddHttpClient("AuthorityApi", client => {
+    client.BaseAddress = new Uri("https://localhost:7117/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 builder.Services.AddTransient<IWebApiExecuter, WebApiExecuter>();
 
 

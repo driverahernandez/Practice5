@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Practice5_DataAccess.Data.RepositoryFactory;
 using Practice5_DataAccess.Interface;
 using Practice5_Model.Models;
+using Practice5_WebAPI.Filters.AuthFilters;
 
 namespace Practice5_WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [JwtTokenAuthFilter]
     public class SaleController : ControllerBase
     {
         private IRepositorySales SalesRepository;
