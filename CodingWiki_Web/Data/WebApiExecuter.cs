@@ -14,7 +14,6 @@ namespace Practice5_Web.Data
         //private const string authApiName = "AuthorityApi";
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IConfiguration configuration;
-        //private readonly IHttpContextAccessor httpContextAccessor;
 
         public WebApiExecuter(
             IHttpClientFactory httpClientFactory,
